@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>An Interaction</title>
+	<style type="text/css">
+		span {
+			font-weight: bold;
+		}
+
+	</style>
+</head>
+<body>
+	<h1>An Interaction</h1>
+	<p>Make your donation count! If you donate $<input type="number" id="donations" value="0" min="0" step="10"> a month to the <a href="https://www.givewell.org/charities/amf" target="_blank">Against Malaria Foundation</a>, then you distribute <span id="nets">0</span> malaria nets and save the lives of <span id="lives">0</span> children each year.</p>
+	<script type="text/javascript">
+		const numberInput = document.getElementById("donations");
+		const outputSpan1 = document.getElementById("nets");
+		const outputSpan2 = document.getElementById("lives");
+
+		function numNets(cost) {
+			return 12 * cost / 4.65;
+		}
+		function numLives(cost) {
+			return 12 * cost / 500;
+		}
+		numberInput.addEventListener("input", () => {
+			updateBlock(numberInput, outputSpan1, numNets);
+			updateBlock(numberInput, outputSpan2, numLives);
+		});
+
+		function updateBlock(input, output, func) {
+			let result = func(input.value);
+			output.innerText = Number.parseFloat(result).toPrecision(3);
+		}
+	</script>
+</body>
+</html>
