@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+
+	<style type="text/css">
+		body {
+			background: black;
+		}
+
+	</style>
+</head>
+<body>
+<canvas width="640" height="480" id="canvas">
+	
+</canvas>
+<script type="text/javascript">
+	let data = sourcedata;
+	console.log(data);
+	const canvas = document.getElementById("canvas");
+	const ctx = canvas.getContext('2d');
+
+	const width = canvas.width;
+	const height = canvas.height;
+
+	function drawSnowman() {
+		ctx.fillStyle = 'lightblue';
+		ctx.fillRect(0,0, width, height);
+		ctx.fillStyle = "#fff";
+		ctx.fillRect(0, height-50, width, 50);
+
+		drawBall(345, 300, 70);
+		drawBall(325, 225, 50);
+		drawBall(305, 180, 30);
+
+		ctx.font = "20px serif";
+		ctx.textAlign = "center";
+		ctx.fillStyle="#333";
+		ctx.fillText("A Snowman", 400, 200);
+	}
+
+	function drawBall(x, y, r) {
+		ctx.beginPath();
+		ctx.moveTo(x, y + r);
+		// ctx.quadraticCurveTo(x+r, y+r, x+r, y);
+
+		// ctx.bezierCurveTo(x+r,y-0.55*r, x+0.55*r,y-r,x,y-r);
+
+
+		// ctx.arcTo(x-r,y-r, x-r,y, r);
+		// ctx.arcTo(x,y, x,y +r, r);
+		ctx.arc(x-r, y+r, r, 0, 2 * Math.PI);
+		ctx.closePath();
+
+		ctx.fillStyle = "#edf0f5";
+		ctx.fill();
+
+		ctx.strokeStyle = "#edf0f5";
+		ctx.lineWidth = 2;
+		ctx.stroke();
+	}
+
+	drawSnowman();
+</script>
+</body>
+</html>

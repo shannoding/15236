@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+
+	<script type="text/javascript" src="./nobel-prize.js"></script>
+	<style type="text/css">
+		body {
+			background: white;
+		}
+
+	</style>
+</head>
+<body>
+	<h1>Nobel Prize laureates from each category</h1>
+<canvas width="640" height="480" id="canvas">
+	
+</canvas>
+
+<p>Source: <a href="http://api.nobelprize.org/v1/prize.json">Nobel Prize</a></p>
+<script type="text/javascript">
+	let data = sourcedata;
+	console.log(data);
+
+	let prizeCount = {};
+
+	for (let prize of data.prizes) {
+		let category = prize.category;
+		if (!prizeCount.hasOwnProperty(category)) {
+			prizeCount[category] = {
+				totalPrizes: 0,
+				laureates: 0
+			};
+		}
+		prizeCount[category].totalPrizes++;
+		if (prize.hasOwnProperty("laureates")) {
+			prizeCount[category].laureates += prize.laureates.length;
+		}
+		
+	}
+	console.log(prizeCount);
+	const canvas = document.getElementById("canvas");
+	const ctx = canvas.getContext('2d');
+
+	const width = canvas.width;
+	const height = canvas.height;
+
+	function drawGraph(data) {
+		ctx.fillStyle = 'white';
+		ctx.fillRect(0,0, width, height);
+		ctx.fillStyle = "black";
+		ctx.fillRect(0, height-50, width, 2);
+
+		let xOffset = 100;
+		for (let bar in prizeCount) {
+			drawBar(xOffset, height-50, (-1) *  prizeCount[bar].laureates, bar, prizeCount[bar].laureates);
+			xOffset += 80;
+
+		}
+		drawAxis(60, 100, height, height-50, 25);
+	}
+
+	function drawAxis(x, y, height, start, scale) {
+		ctx.fillStyle = "black";
+		ctx.fillRect(x, y, 2, height);
+		for (let i = 0; i <= start - y; i += scale) {
+			ctx.textAlign = "right";
+			ctx.fillText(i, x - 5, start - i + 8);
+		}
+	}
+
+	function drawBar(x, y, height, text, value) {
+		ctx.fillStyle = 'green';
+		let width = 50;
+		ctx.fillRect(x, y, width, height);
+		ctx.fillStyle = "#fff";
+
+		ctx.font = "16px serif";
+		ctx.textAlign = "left";
+		ctx.fillStyle="#333";
+		ctx.fillText(text, x, y + 20);
+		ctx.fillText(value, x, y + height - 10);
+	}
+	// drawGraph();
+
+
+	function drawPieSlice(ctx,centerX, centerY, radius, startAngle, endAngle, color) {
+	    ctx.fillStyle = color;
+	    ctx.beginPath();
+	    ctx.moveTo(centerX,centerY);
+	    ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+	    ctx.closePath();
+	    ctx.fill();
+	}
+
+	function drawLegend(ctx, x, y, data, colors) {
+		let start_color = 0;
+		let start_line = 0;
+		ctx.font = "normal 16px Arial";
+
+		for (let category in data) {
+			let category_name = category;
+			let category_value = data[category].laureates;
+			let entryY = y + start_line * 30;
+			ctx.fillStyle = colors[start_color];
+			ctx.fillRect(x, entryY, 50, 20);
+			ctx.fillStyle = "black";
+			ctx.fillText(category_name + " - " + category_value, x + 60, entryY + 15);
+
+
+			start_color = (start_color + 1) % colors.length;
+			start_line++;
+		}
+	}
+
+	function drawPie(ctx, data, colors) {
+		let total_value = 0;
+		for (let category in data) {
+			total_value += data[category].laureates;
+		}
+		let start_angle = 0;
+		let start_color = 0;
+
+		let pieRadius = height / 2 - 20;
+		let startX = width / 2 + 100;
+
+		for (let category in data) {
+			let category_name = category;
+			let category_value = data[category].laureates;
+
+			let slice_angle = 2 * Math.PI * category_value / total_value;
+			
+			drawPieSlice(ctx, startX, height / 2, pieRadius, start_angle, start_angle + slice_angle, colors[start_color]);
+
+			let labelX = startX + (pieRadius * 4/5) * Math.cos(start_angle + slice_angle / 2) - 10;
+	    	let labelY = height / 2 + (pieRadius * 4/5) * Math.sin(start_angle + slice_angle / 2);
+
+	    	let labelText = Math.round(100 * category_value / total_value);
+		    ctx.fillStyle = "white";
+		    ctx.font = "bold 20px Arial";
+		    ctx.fillText(labelText+"%", labelX,labelY);
+
+			start_angle += slice_angle;
+			start_color = (start_color + 1) % colors.length;
+		}
+		
+
+
+		drawPieSlice(ctx, startX, height / 2, 0.5 * height / 2, 0, 2 * Math.PI, "white");
+		drawLegend(ctx, 0, 0, data, colors);
+
+	}
+	let pieColors = ["#97429E", "#DF57EB", "#239E3B", "#4BEB6B", "#9E4123", "#EB6A3F"];
+	drawPie(ctx, prizeCount, pieColors);
+</script>
+</body>
+</html>
