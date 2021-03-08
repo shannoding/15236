@@ -77,8 +77,10 @@
 			
 		}
 
+		let min = 10;
 		for (let i = 0; i < data.length; i++) {
 			if (data[i] > c) {
+				min = i;
 				output.innerHTML = i;
 				break;
 			}
@@ -86,18 +88,26 @@
 
 		console.log(data);
 
-		drawGraph(data);
+		drawGraph(data, min);
 
 	}
-	function drawGraph(data) {
+	function drawGraph(data, c) {
 		ctx.fillStyle = 'white';
 		ctx.fillRect(0,0, width, height);
 		ctx.fillStyle = "black";
 		ctx.fillRect(0, height-50, width, 2);
+		ctx.font = "18px serif";
+
+		ctx.fillText("Percent chance of getting a seat on a flight over number of flights on standby", 50, 70);
+
 
 		let xOffset = 100;
 		for (let i = 0; i < data.length; i++) {
-			drawBar(xOffset, height-50, (-1) *  data[i] * 3, i + " flights", data[i]);
+			let color = 'green';
+			if (i == c) {
+				color = 'red';
+			}
+			drawBar(xOffset, height-50, (-1) *  data[i] * 3, i + " flights", data[i], color);
 			xOffset += 80;
 
 		}
@@ -113,8 +123,8 @@
 		}
 	}
 
-	function drawBar(x, y, height, text, value) {
-		ctx.fillStyle = 'green';
+	function drawBar(x, y, height, text, value, color) {
+		ctx.fillStyle = color;
 		let width = 50;
 		ctx.fillRect(x, y, width, height);
 		ctx.fillStyle = "#fff";
@@ -123,7 +133,7 @@
 		ctx.textAlign = "left";
 		ctx.fillStyle="#333";
 		ctx.fillText(text, x, y + 20);
-		ctx.fillText(value, x, y + height - 10);
+		ctx.fillText(Math.floor(value), x, y + height - 10);
 	}
 	// drawGraph();
 
