@@ -59,6 +59,12 @@
 		return 0;
 	}
 
+	function getStandardDeviation (array) {
+	  const n = array.length
+	  const mean = array.reduce((a, b) => a + b) / n
+	  return Math.sqrt(array.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b) / n)
+	}
+
 	function fullSim() {
 		let p = noshowInput.value;
 		let c = chanceInput.value;
@@ -70,10 +76,10 @@
 			for (let j = 0; j < 100; j++) {
 				
 				let num = simulateKFlights(p, i);
-				dataK.push(num);
+				dataK.push(num * 100);
 			}
 			let avg = dataK.reduce((a,b) => a + b, 0) / dataK.length;
-			data.push(avg * 100);
+			data.push([avg, getStandardDeviation(dataK)]);
 			
 		}
 
@@ -107,7 +113,10 @@
 			if (i == c) {
 				color = 'red';
 			}
-			drawBar(xOffset, height-50, (-1) *  data[i] * 3, i + " flights", data[i], color);
+
+			let bar = data[i][0];
+			let barstd = data[i][1];
+			drawBar(xOffset, height-50, (-1) *  bar * 3, i + " flights", bar, color, barstd);
 			xOffset += 80;
 
 		}
@@ -123,11 +132,12 @@
 		}
 	}
 
-	function drawBar(x, y, height, text, value, color) {
+	function drawBar(x, y, height, text, value, color, stddev) {
 		ctx.fillStyle = color;
 		let width = 50;
 		ctx.fillRect(x, y, width, height);
-		ctx.fillStyle = "#fff";
+		ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+		ctx.fillRect(x + 20, y + height - stddev, width - 40, 2 * stddev);
 
 		ctx.font = "16px serif";
 		ctx.textAlign = "left";
