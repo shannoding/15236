@@ -14,6 +14,7 @@
 <body>
 	<h1>Flying standby</h1>
 <p>Suppose <input type="number" id="noshow" value="3" min="0" step="0.5"> percent of people who make a flight reservation don't show up. The airlines will sell 142 tickets for a 138 seat flight to compensate. If you are on standby and want an <input type="number" id="chance" value="50" min="0" step="1"> percent chance of getting a seat on a flight, you should put yourself on standby for <span id="answer">_</span> flights.</p>
+<p>Simulate <input type="number" id="simnum" value="100" min="0" step="10"> times.</p>
 <input type="submit" value="submit" onClick="fullSim()" />
 
 <canvas width="640" height="480" id="canvas">
@@ -32,6 +33,8 @@
 	const noshowInput = document.getElementById("noshow");
 	const chanceInput = document.getElementById("chance");
 	const output = document.getElementById("answer");
+
+	const numSim = document.getElementById("simnum");
 
 	function simulateOneFlight(n, p) {
 		let shows = 0;
@@ -73,13 +76,14 @@
 		let data = [];
 		for (let i = 0; i < 10; i++) {
 			let dataK = [];
-			for (let j = 0; j < 100; j++) {
+			for (let j = 0; j < numSim.value; j++) {
 				
 				let num = simulateKFlights(p, i);
 				dataK.push(num * 100);
 			}
+			let stddev = getStandardDeviation(dataK);
 			let avg = dataK.reduce((a,b) => a + b, 0) / dataK.length;
-			data.push([avg, getStandardDeviation(dataK)]);
+			data.push([avg, stddev]);
 			
 		}
 
