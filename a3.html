@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+
+	
+	<style type="text/css">
+		body {
+			background: white;
+		}
+
+	</style>
+</head>
+<body>
+	<h1>Flying standby</h1>
+<p>Suppose <input type="number" id="noshow" value="3" min="0" step="0.5"> percent of people who make a flight reservation don't show up. The airlines will sell 142 tickets for a 138 seat flight to compensate. If you are on standby and want an <input type="number" id="chance" value="50" min="0" step="1"> percent chance of getting a seat on a flight, you should put yourself on standby for <span id="answer">_</span> flights.</p>
+<input type="submit" value="submit" onClick="fullSim()" />
+
+<canvas width="640" height="480" id="canvas">
+	
+</canvas>
+
+
+<script type="text/javascript">
+	
+	const canvas = document.getElementById("canvas");
+	const ctx = canvas.getContext('2d');
+
+	const width = canvas.width;
+	const height = canvas.height;
+
+	const noshowInput = document.getElementById("noshow");
+	const chanceInput = document.getElementById("chance");
+	const output = document.getElementById("answer");
+
+	function simulateOneFlight(n, p) {
+		let shows = 0;
+		for (let i = 0; i < n; i++) {
+			let rand = (Math.random() * 100);
+			if (rand >= p) {
+				shows++;
+			}
+		}
+		return shows;
+	}
+
+	function simulateKFlights(p, k) {
+		let n = 142;
+		let success = 0;
+
+		for (let i = 0; i < k; i++) {
+			let sim = simulateOneFlight(n, p);
+
+			if (sim < 138) {
+				return 1;
+			}
+		}
+
+		return 0;
+	}
+
+	function fullSim() {
+		let p = noshowInput.value;
+		let c = chanceInput.value;
+
+
+		let data = [];
+		for (let i = 0; i < 10; i++) {
+			let dataK = [];
+			for (let j = 0; j < 100; j++) {
+				
+				let num = simulateKFlights(p, i);
+				dataK.push(num);
+			}
+			let avg = dataK.reduce((a,b) => a + b, 0) / dataK.length;
+			data.push(avg * 100);
+			
+		}
+
+		for (let i = 0; i < data.length; i++) {
+			if (data[i] > c) {
+				output.innerHTML = i;
+				break;
+			}
+		}
+
+		console.log(data);
+
+		drawGraph(data);
+
+	}
+	function drawGraph(data) {
+		ctx.fillStyle = 'white';
+		ctx.fillRect(0,0, width, height);
+		ctx.fillStyle = "black";
+		ctx.fillRect(0, height-50, width, 2);
+
+		let xOffset = 100;
+		for (let i = 0; i < data.length; i++) {
+			drawBar(xOffset, height-50, (-1) *  data[i] * 3, i + " flights", data[i]);
+			xOffset += 80;
+
+		}
+		drawAxis(60, 100, height, height-50, 25);
+	}
+
+	function drawAxis(x, y, height, start, scale) {
+		ctx.fillStyle = "black";
+		ctx.fillRect(x, y, 2, height);
+		for (let i = 0; i <= start - y; i += scale) {
+			ctx.textAlign = "right";
+			ctx.fillText(Math.floor(i / 3), x - 5, start - i + 8);
+		}
+	}
+
+	function drawBar(x, y, height, text, value) {
+		ctx.fillStyle = 'green';
+		let width = 50;
+		ctx.fillRect(x, y, width, height);
+		ctx.fillStyle = "#fff";
+
+		ctx.font = "16px serif";
+		ctx.textAlign = "left";
+		ctx.fillStyle="#333";
+		ctx.fillText(text, x, y + 20);
+		ctx.fillText(value, x, y + height - 10);
+	}
+	// drawGraph();
+
+
+	let pieColors = ["#97429E", "#DF57EB", "#239E3B", "#4BEB6B", "#9E4123", "#EB6A3F"];
+</script>
+</body>
+</html>
