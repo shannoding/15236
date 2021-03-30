@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Nash Equilibrium Finer</title>
+	<style type="text/css">
+		span {
+			font-weight: bold;
+		}
+		table {
+			border:1px solid gray;
+			padding: 20px;
+			margin:10px auto;
+		}
+		th {
+			background:#EEE;
+		}
+		td, th {
+			width: 50px;
+			text-align: center;
+		}
+		button {
+			display: block;
+			margin:auto;
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	<h1>Nash Equilibrium Finder</h1>
+	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+	quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+	consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+	cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+	proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+	<table>
+		<tr>
+			<th></th>
+			<th>C1</th>
+			<th>C2</th>
+			<th>C3</th>
+			<th>C4</th>
+		</tr>
+		<tr>
+			<th>R1</th>
+			<td><input type="number" id="p11" value="0"></td>
+			<td><input type="number" id="p12" value="0"></td>
+			<td><input type="number" id="p13" value="0"></td>
+			<td><input type="number" id="p14" value="0"></td>
+		</tr>
+		<tr>
+			<th>R2</th>
+			<td><input type="number" id="p21" value="0"></td>
+			<td><input type="number" id="p22" value="0"></td>
+			<td><input type="number" id="p23" value="0"></td>
+			<td><input type="number" id="p24" value="0"></td>
+		</tr>
+		<tr>
+			<th>R3</th>
+			<td><input type="number" id="p31" value="0"></td>
+			<td><input type="number" id="p32" value="0"></td>
+			<td><input type="number" id="p33" value="0"></td>
+			<td><input type="number" id="p34" value="0"></td>
+		</tr>
+		<tr>
+			<th>R4</th>
+			<td><input type="number" id="p41" value="0"></td>
+			<td><input type="number" id="p42" value="0"></td>
+			<td><input type="number" id="p43" value="0"></td>
+			<td><input type="number" id="p44" value="0"></td>
+		</tr>
+	</table>
+	<button type="submit" onClick="compute()">Submit</button>
+	
+	<p id="output"></p>
+	<hr />
+	<h3>Sources</h3>
+	<p></p>
+	<script type="text/javascript">
+		let input = {};
+		for (let i = 1; i <= 4; i++) {
+			for (let j = 1; j <= 4; j++) {
+				let name = "p" + i + "" + j;
+				input[name] = document.getElementById(name);
+			}
+		}
+		const output = document.getElementById("output");
+
+		function compute() {
+			// Access the input "p23" by `input.p23` 
+			let val = {}
+			for (const name in input) {
+				val[name] = parseInt(input[name].value);
+			}
+			// Get the value of input "p41" with `val.p41`
+			console.log(val);
+
+			// Start writing code below:
+		}
+	</script>
+</body>
+</html>
